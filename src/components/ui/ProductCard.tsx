@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Star, ShoppingCart, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useCart } from '@/contexts/CartContext';
 
 interface Product {
   id: number;
@@ -21,9 +22,22 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const { addItem } = useCart();
   const discount = product.originalPrice 
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
     : 0;
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      category: product.category
+    });
+  };
 
   return (
     <div className="group relative bg-card rounded-xl border overflow-hidden transition-all duration-300 card-hover">
@@ -58,9 +72,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               size="sm" 
               className="rounded-full"
               aria-label="Add to cart"
+              onClick={handleAddToCart}
             >
               <ShoppingCart size={16} className="mr-2" />
-              Add to Cart
+              Thêm vào giỏ
             </Button>
             <Button 
               size="icon" 
@@ -118,6 +133,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             variant="ghost"
             className="rounded-full hover:bg-primary hover:text-primary-foreground p-0 w-8 h-8"
             aria-label="Quick add to cart"
+            onClick={handleAddToCart}
           >
             <ShoppingCart size={16} />
           </Button>

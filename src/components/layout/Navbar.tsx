@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -6,9 +7,11 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { UserMenu } from "./UserMenu";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useCart } from "@/contexts/CartContext";
 
 const Navbar = ({ className }: { className?: string }) => {
   const isMobile = useIsMobile();
+  const { totalItems } = useCart();
 
   return (
     <header className={cn("w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60", className)}>
@@ -33,6 +36,9 @@ const Navbar = ({ className }: { className?: string }) => {
                 <Link to="/categories" className="text-lg font-semibold hover:text-primary">
                   Danh mục
                 </Link>
+                <Link to="/cart" className="text-lg font-semibold hover:text-primary">
+                  Giỏ hàng
+                </Link>
               </nav>
             </SheetContent>
           </Sheet>
@@ -54,6 +60,9 @@ const Navbar = ({ className }: { className?: string }) => {
           <Link to="/categories" className="font-medium hover:text-primary transition-colors">
             Danh mục
           </Link>
+          <Link to="/cart" className="font-medium hover:text-primary transition-colors">
+            Giỏ hàng
+          </Link>
         </nav>
 
         {/* Search and cart */}
@@ -72,7 +81,7 @@ const Navbar = ({ className }: { className?: string }) => {
               <ShoppingCart className="h-5 w-5" />
               <span className="sr-only">View Cart</span>
               <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">
-                0
+                {totalItems}
               </span>
             </Button>
           </Link>
