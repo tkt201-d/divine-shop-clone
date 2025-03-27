@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -6,10 +5,10 @@ import { ShoppingCart, Search, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { UserMenu } from "./UserMenu";
-import { useMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Navbar = ({ className }: { className?: string }) => {
-  const isMobile = useMobile();
+  const isMobile = useIsMobile();
 
   return (
     <header className={cn("w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60", className)}>
