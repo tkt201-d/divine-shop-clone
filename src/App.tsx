@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import Account from "./pages/Account";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,13 +22,13 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/account" element={<Account />} />
             {/* These routes will be implemented in future iterations */}
             <Route path="/products" element={<NotFound />} />
             <Route path="/products/:id" element={<NotFound />} />
             <Route path="/categories" element={<NotFound />} />
             <Route path="/categories/:id" element={<NotFound />} />
             <Route path="/cart" element={<NotFound />} />
-            <Route path="/account" element={<NotFound />} />
             {/* Catch-all route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
