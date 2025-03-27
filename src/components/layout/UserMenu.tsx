@@ -11,10 +11,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/hooks/useAuth';
-import { LogOut, User as UserIcon } from 'lucide-react';
+import { useAdmin } from '@/hooks/useAdmin';
+import { LogOut, User as UserIcon, ShieldCheck } from 'lucide-react';
 
 export const UserMenu = () => {
   const { user, signOut } = useAuth();
+  const { isAdmin } = useAdmin();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Lấy chữ cái đầu tiên của email để làm avatar
@@ -61,6 +63,20 @@ export const UserMenu = () => {
             Tài khoản
           </Link>
         </DropdownMenuItem>
+        
+        {isAdmin && (
+          <DropdownMenuItem asChild>
+            <Link 
+              to="/admin" 
+              className="cursor-pointer flex items-center"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <ShieldCheck className="h-4 w-4 mr-2" />
+              Quản trị
+            </Link>
+          </DropdownMenuItem>
+        )}
+        
         <DropdownMenuSeparator />
         <DropdownMenuItem 
           className="cursor-pointer text-destructive focus:text-destructive flex items-center"
