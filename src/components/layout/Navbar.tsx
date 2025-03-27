@@ -1,184 +1,84 @@
 
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Search, ShoppingCart, Menu, User, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Link } from "react-router-dom";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { ShoppingCart, Search, Menu } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Input } from "@/components/ui/input";
+import { UserMenu } from "./UserMenu";
+import { useMobile } from "@/hooks/use-mobile";
 
-const Navbar: React.FC = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [searchVisible, setSearchVisible] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 10) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const toggleSearch = () => {
-    setSearchVisible(!searchVisible);
-  };
+const Navbar = ({ className }: { className?: string }) => {
+  const isMobile = useMobile();
 
   return (
-    <header 
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        isScrolled 
-        ? 'bg-white/90 backdrop-blur-md border-b border-gray-100 py-3' 
-        : 'bg-transparent py-5'
-      }`}
-    >
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link 
-            to="/" 
-            className="text-2xl font-bold text-primary transition-opacity hover:opacity-80"
-          >
-            Divine<span className="text-foreground">Shop</span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="font-medium text-foreground hover:text-primary transition-colors">
-              Home
-            </Link>
-            <Link to="/products" className="font-medium text-foreground hover:text-primary transition-colors">
-              Products
-            </Link>
-            <Link to="/categories" className="font-medium text-foreground hover:text-primary transition-colors">
-              Categories
-            </Link>
-            <Link to="/deals" className="font-medium text-foreground hover:text-primary transition-colors">
-              Deals
-            </Link>
-            <Link to="/about" className="font-medium text-foreground hover:text-primary transition-colors">
-              About
-            </Link>
-          </nav>
-
-          {/* Actions */}
-          <div className="flex items-center space-x-4">
-            <div className={`relative ${searchVisible ? 'block' : 'hidden md:block'}`}>
-              <Input
-                type="search"
-                placeholder="Search..."
-                className={`w-full md:w-40 lg:w-64 py-1 pl-3 pr-8 rounded-full transition-all ${
-                  searchVisible 
-                  ? 'animate-slide-in opacity-100' 
-                  : 'opacity-100'
-                }`}
-              />
-              <Search size={18} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-            </div>
-            
-            <button 
-              onClick={toggleSearch}
-              className="md:hidden flex items-center justify-center w-10 h-10 rounded-full text-foreground hover:bg-muted transition-colors"
-              aria-label="Toggle search"
-            >
-              {searchVisible ? <X size={20} /> : <Search size={20} />}
-            </button>
-            
-            <Link to="/cart" className="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-muted transition-colors">
-              <ShoppingCart size={20} className="text-foreground" />
-              <span className="absolute -top-1 -right-1 bg-primary text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">3</span>
-            </Link>
-            
-            <Link to="/account" className="hidden md:flex items-center justify-center w-10 h-10 rounded-full hover:bg-muted transition-colors">
-              <User size={20} className="text-foreground" />
-            </Link>
-            
-            <Button 
-              className="hidden md:inline-flex"
-              size="sm"
-            >
-              Sign In
-            </Button>
-            
-            <button 
-              onClick={toggleMobileMenu}
-              className="md:hidden flex items-center justify-center w-10 h-10 rounded-full hover:bg-muted transition-colors"
-              aria-label="Toggle menu"
-            >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile menu */}
-      <div 
-        className={`fixed inset-0 bg-background z-40 md:hidden transition-transform duration-300 ease-in-out transform ${
-          isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-        style={{ top: '65px' }}
-      >
-        <div className="container mx-auto px-4 py-6 flex flex-col h-full">
-          <nav className="flex flex-col space-y-6 text-lg">
-            <Link 
-              to="/" 
-              className="font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-muted"
-              onClick={toggleMobileMenu}
-            >
-              Home
-            </Link>
-            <Link 
-              to="/products" 
-              className="font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-muted"
-              onClick={toggleMobileMenu}
-            >
-              Products
-            </Link>
-            <Link 
-              to="/categories" 
-              className="font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-muted"
-              onClick={toggleMobileMenu}
-            >
-              Categories
-            </Link>
-            <Link 
-              to="/deals" 
-              className="font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-muted"
-              onClick={toggleMobileMenu}
-            >
-              Deals
-            </Link>
-            <Link 
-              to="/about" 
-              className="font-medium text-foreground hover:text-primary transition-colors py-2 border-b border-muted"
-              onClick={toggleMobileMenu}
-            >
-              About
-            </Link>
-          </nav>
+    <header className={cn("w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60", className)}>
+      <div className="container flex h-16 items-center justify-between">
+        {/* Logo and brand */}
+        <div className="flex items-center gap-2 md:gap-4">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+              <nav className="flex flex-col gap-4 mt-8">
+                <Link to="/" className="text-lg font-semibold hover:text-primary">
+                  Trang chủ
+                </Link>
+                <Link to="/products" className="text-lg font-semibold hover:text-primary">
+                  Sản phẩm
+                </Link>
+                <Link to="/categories" className="text-lg font-semibold hover:text-primary">
+                  Danh mục
+                </Link>
+              </nav>
+            </SheetContent>
+          </Sheet>
           
-          <div className="mt-auto flex flex-col space-y-4 py-4">
-            <Link 
-              to="/account" 
-              className="font-medium text-foreground hover:text-primary transition-colors"
-              onClick={toggleMobileMenu}
-            >
-              My Account
-            </Link>
-            <Button 
-              onClick={toggleMobileMenu}
-              className="w-full"
-            >
-              Sign In
-            </Button>
+          <Link to="/" className="flex items-center gap-2">
+            <span className="text-xl font-bold tracking-tight">Divine</span>
+            <span className="bg-primary rounded-md text-primary-foreground px-1.5 py-0.5 text-xs font-medium">Store</span>
+          </Link>
+        </div>
+
+        {/* Desktop navigation */}
+        <nav className="hidden md:flex items-center gap-6 text-base">
+          <Link to="/" className="font-medium hover:text-primary transition-colors">
+            Trang chủ
+          </Link>
+          <Link to="/products" className="font-medium hover:text-primary transition-colors">
+            Sản phẩm
+          </Link>
+          <Link to="/categories" className="font-medium hover:text-primary transition-colors">
+            Danh mục
+          </Link>
+        </nav>
+
+        {/* Search and cart */}
+        <div className="flex items-center gap-2">
+          <div className="relative hidden lg:flex items-center">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input 
+              type="search" 
+              placeholder="Tìm kiếm..." 
+              className="pl-9 w-[200px] bg-muted" 
+            />
           </div>
+          
+          <Link to="/cart">
+            <Button variant="outline" size="icon" className="relative">
+              <ShoppingCart className="h-5 w-5" />
+              <span className="sr-only">View Cart</span>
+              <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">
+                0
+              </span>
+            </Button>
+          </Link>
+          
+          <UserMenu />
         </div>
       </div>
     </header>
