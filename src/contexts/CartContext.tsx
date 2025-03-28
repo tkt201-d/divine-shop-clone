@@ -1,21 +1,13 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'sonner';
-
-export interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  quantity: number;
-  category: string;
-}
+import { CartItem } from '@/types/product';
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (product: Omit<CartItem, 'quantity'>) => void;
-  removeItem: (id: number) => void;
-  updateQuantity: (id: number, quantity: number) => void;
+  addItem: (product: CartItem) => void;
+  removeItem: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   totalItems: number;
   subtotal: number;
@@ -47,7 +39,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [items]);
   
-  const addItem = (product: Omit<CartItem, 'quantity'>) => {
+  const addItem = (product: CartItem) => {
     setItems(currentItems => {
       const existingItem = currentItems.find(item => item.id === product.id);
       
@@ -60,17 +52,17 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         );
       } else {
         toast.success('Sản phẩm đã được thêm vào giỏ hàng');
-        return [...currentItems, { ...product, quantity: 1 }];
+        return [...currentItems, product];
       }
     });
   };
   
-  const removeItem = (id: number) => {
+  const removeItem = (id: string) => {
     setItems(currentItems => currentItems.filter(item => item.id !== id));
     toast.success('Sản phẩm đã được xóa khỏi giỏ hàng');
   };
   
-  const updateQuantity = (id: number, quantity: number) => {
+  const updateQuantity = (id: string, quantity: number) => {
     if (quantity < 1) return;
     
     setItems(currentItems => 

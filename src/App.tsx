@@ -11,6 +11,7 @@ import Auth from "./pages/Auth";
 import Account from "./pages/Account";
 import Cart from "./pages/Cart";
 import Admin from "./pages/Admin";
+import Products from "./pages/Products";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,8 +30,8 @@ const App = () => (
               <Route path="/account" element={<Account />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/products" element={<Products />} />
               {/* These routes will be implemented in future iterations */}
-              <Route path="/products" element={<NotFound />} />
               <Route path="/products/:id" element={<NotFound />} />
               <Route path="/categories" element={<NotFound />} />
               <Route path="/categories/:id" element={<NotFound />} />
