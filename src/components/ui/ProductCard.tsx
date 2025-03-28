@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Star, ShoppingCart } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useCart } from '@/contexts/CartContext';
-import { Product } from '@/types/product';
+import { Product, CartItem } from '@/types/product';
 import { toast } from 'sonner';
 
 interface ProductCardProps {
@@ -16,14 +16,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addItem } = useCart();
 
   const handleAddToCart = () => {
-    addItem({
+    const cartItem: CartItem = {
       id: product.id,
       name: product.name,
       price: product.price,
       quantity: 1,
       image: product.image || 'https://placehold.co/600x400?text=No+Image', 
       category: product.category || 'Uncategorized'
-    });
+    };
+    
+    addItem(cartItem);
     
     toast.success('Đã thêm vào giỏ hàng', {
       description: product.name,

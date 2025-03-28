@@ -3,8 +3,8 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import AccountHeader from '@/components/account/AccountHeader';
-import AccountForm from '@/components/account/AccountForm';
+import { AccountHeader } from '@/components/account/AccountHeader';
+import { AccountForm } from '@/components/account/AccountForm';
 import MakeAdmin from '@/components/account/MakeAdmin';
 import { useAuth } from '@/hooks/useAuth';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -35,7 +35,7 @@ const Account = () => {
       <Navbar />
       
       <main className="flex-1">
-        <AccountHeader />
+        <AccountHeader user={user} />
         
         <div className="container max-w-4xl py-10">
           <Tabs defaultValue="profile" className="w-full">
@@ -45,7 +45,7 @@ const Account = () => {
             </TabsList>
             
             <TabsContent value="profile">
-              <AccountForm />
+              <AccountForm profile={null} updateProfile={async () => false} />
             </TabsContent>
             
             <TabsContent value="admin">
