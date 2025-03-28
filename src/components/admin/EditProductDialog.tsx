@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -26,6 +26,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Product, ProductFormData } from '@/types/product';
+import { uploadProductImage } from '@/services/productService';
+import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Tên sản phẩm là bắt buộc'),
@@ -52,6 +54,9 @@ const EditProductDialog: React.FC<EditProductDialogProps> = ({
   product,
   onProductUpdated,
 }) => {
+  const [uploading, setUploading] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(product.image || null);
+  
   const form = useForm<ProductFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -66,6 +71,56 @@ const EditProductDialog: React.FC<EditProductDialogProps> = ({
       stock: product.stock,
     },
   });
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    
+    if (!files || files.length === 0) {
+      return;
+    }
+    
+    const file = files[0];
+    
+    // Check file size (limit to 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Kích thước file quá lớn', {
+        description: 'Hình ảnh không được vượt quá 5MB',
+      });
+      return;
+    }
+    
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Loại file không hợp lệ', {
+        description: 'Chỉ chấp nhận file hình ảnh',
+      });
+      return;
+    }
+    
+    try {
+      setUploading(true);
+      
+      // Create a preview
+      const preview = URL.createObjectURL(file);
+      setImagePreview(preview);
+      
+      // Upload to Supabase Storage
+      const imageUrl = await uploadProductImage(file);
+      
+      if (imageUrl) {
+        form.setValue('image', imageUrl);
+        toast.success('Tải ảnh lên thành công');
+      } else {
+        toast.error('Không thể tải ảnh lên');
+      }
+    } catch (error: any) {
+      toast.error('Lỗi khi tải ảnh lên', {
+        description: error.message,
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const onSubmit = async (data: ProductFormData) => {
     try {
@@ -185,10 +240,44 @@ const EditProductDialog: React.FC<EditProductDialogProps> = ({
               name="image"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>URL Hình ảnh</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
+                  <FormLabel>Hình ảnh sản phẩm</FormLabel>
+                  <div className="space-y-4">
+                    <div className="border rounded-md p-2">
+                      <Input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="mb-2"
+                      />
+                      
+                      {field.value && (
+                        <Input 
+                          type="text"
+                          value={field.value}
+                          onChange={field.onChange}
+                          className="mt-2"
+                          disabled
+                        />
+                      )}
+                      
+                      {uploading && (
+                        <div className="flex items-center space-x-2 mt-2">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <span className="text-sm text-muted-foreground">Đang tải ảnh lên...</span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {(imagePreview || field.value) && (
+                      <div className="mt-2 border rounded-md overflow-hidden h-36 w-full">
+                        <img 
+                          src={imagePreview || field.value} 
+                          alt="Preview" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
